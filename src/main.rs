@@ -1,6 +1,7 @@
 use actix_web::middleware::errhandlers::ErrorHandlers;
 use actix_web::{http, web, App, HttpServer};
 
+mod errors;
 mod handlers;
 mod models;
 mod repo;
@@ -19,12 +20,10 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default())
             .wrap(
-                ErrorHandlers::new()
-                    .handler(
-                        http::StatusCode::INTERNAL_SERVER_ERROR,
-                        handlers::render_500,
-                    )
-                    .handler(http::StatusCode::BAD_REQUEST, handlers::render_400),
+                ErrorHandlers::new().handler(
+                    http::StatusCode::INTERNAL_SERVER_ERROR,
+                    handlers::render_500,
+                ), // .handler(http::StatusCode::BAD_REQUEST, handlers::render_400),
             )
             .service(person_service)
     })
