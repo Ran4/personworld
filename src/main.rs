@@ -13,7 +13,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
-        let person_service = web::scope("/person")
+        let person_service = web::scope("/persons")
             .route("/{id}", web::get().to(handlers::get_person))
             .route("", web::post().to(handlers::post_person));
 

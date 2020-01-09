@@ -7,18 +7,6 @@ use serde_json::json;
 
 use crate::models::Person;
 
-// pub fn render_400<B>(res: dev::ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
-//     let json_string = serde_json::to_string(&json!({
-//         "message": "Bad request"
-//     }))
-//     .unwrap();
-
-//     let new_res = res.map_body(|_resphead, _respbody| {
-//         dev::ResponseBody::Other(dev::Body::Message(Box::new(json_string)))
-//     });
-//     Ok(ErrorHandlerResponse::Response(new_res))
-// }
-
 pub fn render_500<B>(res: dev::ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
     let json_string = serde_json::to_string(&json!({
         "message": "Internal server error"
