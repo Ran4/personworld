@@ -1,4 +1,3 @@
-use crate::models::Person;
 use rusqlite::{params, Connection};
 
 pub fn get_conn() -> Connection {
@@ -19,15 +18,29 @@ pub fn get_conn() -> Connection {
     conn
 }
 
-pub fn get_person_by_id(conn: Connection, id: i32) -> rusqlite::Result<Person> {
-    conn.query_row(
-        "SELECT name, age FROM person WHERE age = ?1",
-        params![id],
-        |row| {
-            Ok(Person {
-                name: row.get(0)?,
-                age: row.get(1)?,
-            })
-        },
-    )
+pub enum Reference {
+    Reference,
+}
+
+use std::convert::Into;
+
+impl Into<Reference> for i32 {
+    fn into(self) -> Reference {
+        Reference::Reference
+    }
+}
+
+impl Into<Reference> for String {
+    fn into(self) -> Reference {
+        Reference::Reference
+    }
+}
+
+pub trait FromDb<T>
+where
+    T: Into<Reference>,
+{
+    fn from_db(conn: Connection, reference: T) -> rusqlite::Result<Self>
+    where
+        Self: Sized;
 }

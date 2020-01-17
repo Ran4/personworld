@@ -2,7 +2,7 @@ use actix_web::middleware::errhandlers::ErrorHandlerResponse;
 use actix_web::{dev, web, Responder, Result};
 
 use crate::errors::AppError;
-use crate::repo;
+use crate::repo::{get_conn, FromDb};
 use serde_json::json;
 
 use crate::models::Person;
@@ -25,6 +25,7 @@ pub async fn post_person(person: web::Json<Person>) -> impl Responder {
 
 pub async fn get_person(id: web::Path<(i32,)>) -> impl Responder {
     let id = id.0;
-    let conn = repo::get_conn();
-    repo::get_person_by_id(conn, id).map_err(|_err| AppError::NotFound)
+    let conn = get_conn();
+    // Person::from_db(conn, id).map_err(|_err| AppError::NotFound)
+    Person::from_db(conn, id).map_err(|_err| AppError::NotFound)
 }

@@ -24,3 +24,36 @@ impl Responder for Person {
         json_response(self)
     }
 }
+
+use crate::repo::FromDb;
+use rusqlite::{params, Connection};
+
+impl FromDb<i32> for Person {
+    fn from_db(conn: Connection, reference: i32) -> rusqlite::Result<Self> {
+        conn.query_row(
+            "SELECT name, age FROM person WHERE age = ?1",
+            params![reference],
+            |row| {
+                Ok(Person {
+                    name: row.get(0)?,
+                    age: row.get(1)?,
+                })
+            },
+        )
+    }
+}
+
+impl FromDb<String> for Person {
+    fn from_db(conn: Connection, reference: String) -> rusqlite::Result<Self> {
+        conn.query_row(
+            "SELECT name, age FROM person WHERE name = ?1",
+            params![reference],
+            |row| {
+                Ok(Person {
+                    name: row.get(0)?,
+                    age: row.get(1)?,
+                })
+            },
+        )
+    }
+}
